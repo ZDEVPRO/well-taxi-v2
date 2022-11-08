@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 
 from home.models import *
 
-
+@login_required(login_url='/kirish/')
 def driver_home(request):
     if request.user.type == 1 or request.user.type == 2:
         try:
@@ -125,7 +125,7 @@ def index(request):
     elif request.user.type == 3:
         return redirect('customer')
 
-
+@login_required(login_url='/kirish/')
 def accept_order(request, id):
     order = Order.objects.get(id=id)
     order.status = 'kutish'
@@ -133,7 +133,7 @@ def accept_order(request, id):
     order.save()
     return redirect('driver-order-detail', id)
 
-
+@login_required(login_url='/kirish/')
 def accept_customer(request, id):
     order = Order.objects.get(id=id)
     order.status = 'olindi'
@@ -141,7 +141,7 @@ def accept_customer(request, id):
     order.save()
     return redirect('driver-myorders')
 
-
+@login_required(login_url='/kirish/')
 def filter_order(request):
     if request.method == 'POST':
         viloyatdan = request.POST.get('viloyatdan')
@@ -185,7 +185,7 @@ def filter_order(request):
             filter_data.save()
             return redirect('driver')
 
-
+@login_required(login_url='/kirish/')
 def clean_filter(request):
     try:
         myfilter = Filter.objects.get(user=request.user)
