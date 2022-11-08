@@ -115,7 +115,7 @@ def order_detail(request, id):
     elif request.user.type == 1 or request.user.type == 2:
         return redirect('driver')
 
-
+@login_required(login_url='/kirish/')
 def black_list(request, id):
     if request.user.type == 3:
         order = Order.objects.get(id=id)
@@ -129,6 +129,6 @@ def black_list(request, id):
     elif request.user.type == 1 or request.user.type == 2:
         return redirect('driver')
 
-
+@login_required(login_url='/kirish/')
 def customer_order_update(request, id):
     return redirect('customer-order-detail', id)
