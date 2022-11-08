@@ -20,6 +20,10 @@ class User(AbstractUser):
         swappable = 'AUTH_USER_MODEL'
         verbose_name = 'User'
         verbose_name_plural = 'Users'
+        
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super().save(*args, **kwargs)
 
 
 class Price(models.Model):
