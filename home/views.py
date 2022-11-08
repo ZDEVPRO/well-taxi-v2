@@ -110,7 +110,7 @@ def logout_view(request):
 def kirish(request):
     return render(request, 'registration/kirish.html')
 
-
+@login_required(login_url='/kirish/')
 def getorders_driver(request):
     if request.method == 'GET':
         try:
@@ -186,7 +186,7 @@ def getorders_driver(request):
 
             return JsonResponse({'xato': 'xatolik!'})
 
-
+@login_required(login_url='/kirish/')
 def get_customer_order_detail(request, id):
     try:
         obj = Order.objects.get(id=id)
@@ -206,7 +206,7 @@ def get_customer_order_detail(request, id):
         print(e)
         JsonResponse({'xato': 'Xatolik!'})
 
-
+@login_required(login_url='/kirish/')
 def getorders_customer(request):
     try:
         queryset = Order.objects.filter(customer=request.user).order_by('-id')
@@ -214,7 +214,7 @@ def getorders_customer(request):
     except Exception as e:
         return e
 
-
+@login_required(login_url='/kirish/')
 def get_top_orders_driver(request):
     if request.method == 'GET':
         try:
@@ -290,7 +290,7 @@ def get_top_orders_driver(request):
 
             return JsonResponse({'xato': 'xatolik!'})
 
-
+@login_required(login_url='/kirish/')
 def get_myorders_customer(request):
     myorders = Order.objects.filter(customer=request.user)
     count = myorders.count()
