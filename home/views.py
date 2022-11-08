@@ -293,8 +293,10 @@ def get_top_orders_driver(request):
 
 def get_myorders_customer(request):
     myorders = Order.objects.filter(customer=request.user)
+    count = myorders.count()
 
     context = {
         'orders': list(myorders.values()),
+        'count': count
     }
     return JsonResponse(context)
