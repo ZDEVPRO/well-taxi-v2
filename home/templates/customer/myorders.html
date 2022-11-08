@@ -1,0 +1,153 @@
+{% extends 'driver/base.html' %}
+{% load static %}
+{% block title %}Mening Buyurtmalarim - ORIGIN DIGITAL{% endblock %}
+
+{% block content %}
+    <div class="modal fade" id="infomodal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalCenterTitle">MALUMOT</h6>
+                    <button class="close close" type="button" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Bu "Mening Buyurtmalarim" sahifasi. Bu sahifada sizning buyurtmalaringiz ko'rinadi.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" style="width: 100%; background-color: grey; border: 1px solid grey;"
+                            type="button" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">YOPISH</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+        <div class="container h-100 d-flex align-items-center justify-content-between">
+            <!-- Back Button-->
+            <div class="back-button">
+                <a style="text-decoration: none;" href="{% url 'customer' %}">
+                    <i class="lni lni-chevron-left"></i>
+                </a>
+            </div>
+
+            <!-- Page Title-->
+            <div class="page-heading">
+                <h6 class="mb-0">BUYURTMALARIM</h6>
+            </div>
+
+            <!-- Search Form-->
+            <div class="search-form">
+                {% if request.path == '/driver/orders/' %}
+                    <a data-toggle="modal" data-target="#filtermodal">
+                        <i class="fa fa-sliders"></i>
+                    </a>
+                {% else %}
+                    <a data-toggle="modal" data-target="#infomodal">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <!-- Trending News Wrapper-->
+        <div class="trending-news-wrapper">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="mb-3 line-height-1">MENING BUYURTMALARIM</h6>
+                </div>
+            </div>
+
+            <div id="container" class="container">
+{#                <div style="background-color: navajowhite;" class="single-trending-post d-flex">#}
+{#                    <div class="post-content">#}
+{#                        <a href="{% url 'customer-order-detail' rs.id %}"#}
+{#                           style="color: black; text-decoration: none;"#}
+{#                           class="post-title">{{ rs.qayerdan }} <i#}
+{#                                class="fa fa-angle-double-right"></i> {{ rs.qayerga }}</a>#}
+{#                        <div class="post-meta d-flex align-items-center">#}
+{#                            <a href="{% url 'customer-order-detail' rs.id %}"#}
+{#                               style="text-decoration: none; background-color: #00b894;">ODAM#}
+{#                                SONI: {{ rs.person_count }} TA</a>#}
+{#                            <a href="{% url 'customer-order-detail' rs.id %}"#}
+{#                               style="text-decoration: none;">NARXI: {{ rs.price }}</a>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <div style="background-color: navajowhite;" class="single-trending-post d-flex">#}
+{#                    <div class="post-content">#}
+{#                        <a style="color: black; text-decoration: none; text-align: center;" class="post-title">Buyurtmalar#}
+{#                            mavjud emas!</a>#}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+        <div class="newsten-footer-nav h-100">
+            <ul class="h-100 d-flex align-items-center justify-content-between">
+                <li style="margin-left: 5%;">
+                    <a href="{% url 'home' %}">
+                        <i class="lni lni-home"></i>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'customer-my-orders' %}">
+                        <i class="fa-regular fa-bookmark"></i>
+                    </a>
+                </li>
+                <li>
+                    <a style="margin-right: 5%;" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'get-myorders-customer' %}",
+                    success: function (response) {
+                        if (0 === response.count) {
+                            $("#container").empty();
+                            var html = "<div style='background-color: navajowhite;' class='single-trending-post d-flex'><div class='post-content''><a style='color: black; text-decoration: none; text-align: center;' class='post-title'>Buyurtmalar mavjud emas</a></div></div>"
+                            $('#container').append(html);
+                        } else {
+                            $("#container").empty();
+                            for (var key in response.orders) {
+                                var new_div_start = "<div style='background-color: navajowhite;' id='allorders' class='single-trending-post d-flex'><div class='post-content'>"
+                                var new_a = "<a href='/customer/order/" + response.orders[key].id + "' style='color: black; text-decoration: none;' class='post-title'>" + response.orders[key].qayerdan_nomi + " <i class='fa fa-angle-double-right'></i> " + response.orders[key].qayerga_nomi + "</a>"
+                                var new_div = "<div class='post-meta d-flex align-items-center'><a href='/customer/order/" + response.orders[key].id + "' style='text-decoration: none; background-color: #00b894;'>ODAM SONI: " + response.orders[key].person_count + "TA<a href='/customer/order/" + response.orders[key].id + "' style='text-decoration: none;'>NARXI: " + response.orders[key].price_nomi + "</a>"
+                                var new_div_end = "</div></div></div>"
+                                var result = new_div_start + new_a + new_div + new_div_end
+
+                                $('#container').append(result);
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log("No Data Found");
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+{% endblock %}

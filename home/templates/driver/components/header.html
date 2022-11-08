@@ -1,0 +1,33 @@
+{% load static %}
+
+{% if request.path == '/driver/orders/' or request.path == '/driver/kutish/' or request.path == '/driver/my-orders/' %}
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+        <div class="container h-100 d-flex align-items-center justify-content-between">
+            <!-- Back Button-->
+            <div class="back-button">
+                <a style="text-decoration: none;" href="{% url 'driver-home' %}">
+                    <i class="lni lni-chevron-left"></i>
+                </a>
+            </div>
+
+            <!-- Page Title-->
+            <div class="page-heading">
+                <h6 class="mb-0">BUYURTMALAR</h6>
+            </div>
+
+            <!-- Search Form-->
+            <div class="search-form">
+                {% if request.path == '/driver/orders/' %}
+                    <a data-toggle="modal" data-target="#filtermodal">
+                        <i class="fa fa-sliders"></i>
+                    </a>
+                {% else %}
+                    <a data-toggle="modal" data-target="#infomodal">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}

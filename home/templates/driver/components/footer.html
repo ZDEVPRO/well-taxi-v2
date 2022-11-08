@@ -1,0 +1,26 @@
+{% load static %}
+
+{% if request.path == '/driver/orders/' or request.path == '/driver/kutish/' or request.path == '/driver/my-orders/' %}
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+        <div class="newsten-footer-nav h-100">
+            <ul class="h-100 d-flex align-items-center justify-content-between">
+                <li style="margin-left: 5%;" {% if request.path == '/driver/orders/' %}class="active"{% endif %}>
+                    <a href="{% url 'driver' %}">
+                        <i class="fa-{% if request.path == '/driver/orders/' %}solid{% else %}regular{% endif %} fa-bookmark"></i> {{ active_orders_count }}
+                    </a>
+                </li>
+                <li {% if request.path == '/driver/kutish/' %}class="active"{% endif %}>
+                    <a href="{% url 'driver-kutish' %}">
+                        <i class="fa{% if request.path == '/driver/kutish/' %}-solid{% endif %} fa-clock-o"></i> {{ kutish_orders_count }}
+                    </a>
+                </li>
+                <li style="margin-right: 5%;" {% if request.path == '/driver/my-orders/' %}class="active"{% endif %}>
+                    <a href="{% url 'driver-myorders' %}" {% if request.path == '/driver/' %}class="active"{% endif %}>
+                        <i class="fa{% if request.path == '/driver/my-orders/' %}-solid{% else %}-regular{% endif %} fa-user"></i> {{ olindi_orders_count }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endif %}

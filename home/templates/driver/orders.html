@@ -1,0 +1,401 @@
+{% extends 'driver/base.html' %}
+{% load static %}
+{% block title %}Buyurtmalar{% endblock %}
+
+{% block content %}
+    <style>
+        .select-box {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .select-box .options-container {
+            background: antiquewhite;
+            color: #1b1e21;
+            max-height: 0;
+            width: 100%;
+            opacity: 0;
+            transition: all 0.4s;
+            border-radius: 5px;
+            overflow: hidden;
+
+            order: 1;
+        }
+
+        .selected {
+            background: antiquewhite;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: black;
+            position: relative;
+
+            order: 0;
+        }
+
+        .selected::after {
+            content: "";
+            background-size: contain;
+            background-repeat: no-repeat;
+
+            position: absolute;
+            height: 100%;
+            width: 32px;
+            right: 10px;
+            top: 5px;
+
+            transition: all 0.4s;
+        }
+
+        .select-box .options-container.active {
+            max-height: 240px;
+            opacity: 1;
+            overflow-y: scroll;
+        }
+
+        .select-box .options-container.active + .selected::after {
+            transform: rotateX(180deg);
+            top: -6px;
+        }
+
+        .select-box .options-container::-webkit-scrollbar {
+            width: 8px;
+            background: white;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .select-box .options-container::-webkit-scrollbar-thumb {
+            background: #00b894;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .select-box .option,
+        .selected {
+            padding: 12px 24px;
+            cursor: pointer;
+        }
+
+        .select-box .option:hover {
+            background: #b9bbbe;
+        }
+
+        .select-box label {
+            cursor: pointer;
+        }
+
+        .select-box .option .radio {
+            display: none;
+        }
+    </style>
+    <style>
+        .select-box2 {
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .select-box2 .options-container2 {
+            background: antiquewhite;
+            color: #1b1e21;
+            max-height: 0;
+            width: 100%;
+            opacity: 0;
+            transition: all 0.4s;
+            border-radius: 5px;
+            overflow: hidden;
+
+            order: 1;
+        }
+
+        .selected2 {
+            background: antiquewhite;
+            border-radius: 5px;
+            margin-bottom: 8px;
+            color: black;
+            position: relative;
+
+            order: 0;
+        }
+
+        .selected2::after {
+            content: "";
+            background-size: contain;
+            background-repeat: no-repeat;
+
+            position: absolute;
+            height: 100%;
+            width: 32px;
+            right: 10px;
+            top: 5px;
+
+            transition: all 0.4s;
+        }
+
+        .select-box2 .options-container2.active {
+            max-height: 240px;
+            opacity: 1;
+            overflow-y: scroll;
+        }
+
+        .select-box2 .options-container2.active + .selected2::after {
+            transform: rotateX(180deg);
+            top: -6px;
+        }
+
+        .select-box2 .options-container2::-webkit-scrollbar {
+            width: 8px;
+            background: white;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .select-box2 .options-container2::-webkit-scrollbar-thumb {
+            background: #00b894;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .select-box2 .option2,
+        .selected2 {
+            padding: 12px 24px;
+            cursor: pointer;
+        }
+
+        .select-box2 .option2:hover {
+            background: #b9bbbe;
+        }
+
+        .select-box2 label {
+            cursor: pointer;
+        }
+
+        .select-box2 .option2 .radio2 {
+            display: none;
+        }
+    </style>
+
+    <!-- FILTER MODAL-->
+    <div class="modal fade" id="filtermodal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalCenterTitle">FILTER. KERAKLI BO'LIMLARNI TANLANG</h6>
+                    <button class="close close" type="button" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-footer">
+                    <a style="width: 100%;" href="{% url 'driver-clean-filter' %}">
+                        <button style="width: 100%; background-color: darkblue; border: 1px solid darkblue;"
+                                class="btn btn-primary" type="submit">BARCHASINI KO'RISH
+                        </button>
+                    </a>
+                </div>
+                <form action="{% url 'driver-filter-order' %}" method="post">{% csrf_token %}
+                    <div style="text-align: center;" class="modal-body">
+                        <div class="select-box">
+                            <div name="viloyatdan" class="options-container">
+                                {% for rs in regions %}
+                                    <div class="option">
+                                        <input value="{{ rs.nomi }}" type="radio" id="id_viloyatdan"
+                                               class="radio input1" name="viloyatdan"/>
+                                        <label for="#id_viloyatdan">{{ rs.nomi }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="selected">
+                                Qaysi Viloyatdan
+                            </div>
+                        </div>
+                        <div class="select-box2">
+                            <div name="viloyatga" class="options-container2">
+                                {% for rs in regions %}
+                                    <div class="option2">
+                                        <input value="{{ rs.nomi }}" type="radio" id="id_viloyatga"
+                                               class="radio2 input2" name="viloyatga"/>
+                                        <label for="#id_viloyatga" class="label2">{{ rs.nomi }}</label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="selected2">
+                                Qaysi Viloyatga
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <a style="width: 100%;">
+                            <button style="width: 100%; background-color: #65ba94; border: 1px solid #65ba94;"
+                                    class="btn btn-primary" type="submit">FILTERLASH
+                            </button>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Center Modal-->
+    <div id="mainmodal">
+        {#        <div class="modal fade" id="ordermodal" tabindex="-1" role="dialog"#}
+        {#             aria-labelledby="exampleModalCenterTitle"#}
+        {#             aria-hidden="true">#}
+        {#            <div class="modal-dialog modal-dialog-centered" role="document">#}
+        {#                <div class="modal-content">#}
+        {#                    <div class="modal-header">#}
+        {#                        <h6 class="modal-title" id="exampleModalCenterTitle">BUYURTMA HAQIDA</h6>#}
+        {#                        <button class="close close" type="button" data-dismiss="modal" aria-label="Close"><span#}
+        {#                                aria-hidden="true">&times;</span></button>#}
+        {#                    #}
+        {##}
+        {#                    <div class="modal-body">#}
+        {#                        <h6>YO'NALISH: {{ rs.qayerdan }} <i#}
+        {#                                class="fa fa-angle-double-right"></i> {{ rs.qayerga }}#}
+        {#                        </h6>#}
+        {#                        <h6>ODAM SONI: {{ rs.person_count }} TA</h6>#}
+        {#                        <h6>NARXI:#}
+        {#                            {% if rs.price.narx == 'Kelishiladi' %}{{ rs.price|upper }} 🤝#}
+        {#                                {% else %}{{ rs.price }}#}
+        {#                                GACHA{% endif %}</h6>#}
+        {#                        <h6>MANZIL: {{ rs.location }}</h6>#}
+        {#                    </div>#}
+        {##}
+        {#                    <div class="modal-footer">#}
+        {#                        {% if rs.blacklist == request.user %}#}
+        {#                            <h6 style="width: 100%; text-align: center; color: darkred;">Mijoz sizni uzoqdaligingiz#}
+        {#                                xaqida xabar berdi! <br> Xozircha bu buyurtmani qabul qila olmaysiz!</h6>#}
+        {#                        {% else %}#}
+        {#                            <a style="width: 100%;" href="{% url 'driver-accept-order' 1 %}">#}
+        {#                                <button style="width: 100%; background-color: #65ba94; border: 1px solid #65ba94;"#}
+        {#                                        class="btn btn-primary" type="button">BUYURTMANI QABUL QILISH#}
+        {#                                </button>#}
+        {#                            </a>#}
+        {#                        {% endif %}#}
+        {#                    </div>#}
+        {#                </div>#}
+        {#            </div>#}
+        {#        </div>#}
+    </div>
+
+
+    <div class="page-content-wrapper">
+        <!-- Trending News Wrapper-->
+        <div class="trending-news-wrapper">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="mb-3 line-height-1">
+                        {% if myfilter %}
+                            {% if myfilter.status == 'barchasi' %}Barcha yo'nalishlar
+                            {% elif myfilter.qayerdan is not None and myfilter.qayerga is not None %}
+                                Yo'nalish: {{ myfilter.qayerdan }} <i class="fa fa-angle-double-right"></i>
+                                {{ myfilter.qayerga }}
+                            {% elif myfilter.qayerdan is not None and myfilter.qayerga is None %}
+                                Yo'nalish: {{ myfilter.qayerdan }}dan <i class="fa fa-angle-double-right"></i>
+                                Barcha yo'nalish
+                            {% elif myfilter.qayerdan is None and myfilter.qayerga is not None %}
+                                Yo'nalish: Barcha yo'nalishdan <i class="fa fa-angle-double-right"></i>
+                                {{ myfilter.qayerga }}ga
+                            {% elif myfilter.qayerdan is None and myfilter.qayerga is None %}
+                                Barcha yo'nalishlar
+                            {% endif %}
+                        {% else %}
+                            Barcha yo'nalishlar
+                        {% endif %}
+                    </h6>
+                </div>
+            </div>
+
+            <div id="container" class="container">
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+    </div>
+
+    <script>
+        const selected = document.querySelector(".selected");
+        const optionsContainer = document.querySelector(".options-container");
+
+        const optionsList = document.querySelectorAll(".option");
+
+        selected.addEventListener("click", () => {
+            optionsContainer.classList.toggle("active");
+        });
+
+        optionsList.forEach(o => {
+            o.addEventListener("click", () => {
+                selected.innerHTML = o.querySelector("label").innerHTML;
+                o.querySelector(".input1").checked = true;
+                optionsContainer.classList.remove("active");
+            });
+        });
+    </script>
+
+    <script>
+        const selected2 = document.querySelector(".selected2");
+        const optionsContainer2 = document.querySelector(".options-container2");
+
+        const optionsList2 = document.querySelectorAll(".option2");
+
+        selected2.addEventListener("click", () => {
+            optionsContainer2.classList.toggle("active");
+        });
+
+        optionsList2.forEach(o => {
+            o.addEventListener("click", () => {
+                selected2.innerHTML = o.querySelector(".label2").innerHTML;
+                o.querySelector(".input2").checked = true;
+                optionsContainer2.classList.remove("active");
+            });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'getorders-driver' %}",
+                    success: function (response) {
+                        $("#footerNav").empty();
+                        var foot1 = "<div class='newsten-footer-nav h-100'><ul class='h-100 d-flex align-items-center justify-content-between'>"
+                        var foot2 = "<li style='margin-left: 5%;' class='active'><a href='/driver/orders/'><i class='fa-solid fa-bookmark'></i> " + response.count + "</a></li>"
+                        var foot3 = "<li><a href='/driver/kutish/'><i class='fa fa-clock-o'></i> " + response.kutish_count + "</a></li>"
+                        var foot4 = "<li><a href='/driver/my-orders/'><i class='fa fa-user'></i> " + response.olindi_count + "</a></li>"
+                        var foot5 = "</ul></div>"
+                        var footresult = foot1 + foot2 + foot3 + foot4 + foot5
+                        $('#footerNav').append(footresult);
+
+
+                        if (0 === response.count) {
+                            $("#container").empty();
+                            var html = "<div style='background-color: navajowhite;' class='single-trending-post d-flex'><div class='post-content''><a style='color: black; text-decoration: none; text-align: center;' class='post-title'>Buyurtmalar mavjud emas</a></div></div>"
+                            $('#container').append(html);
+                        } else {
+                            $("#container").empty();
+                            for (var key in response.orders) {
+                                var new_div_start = "<div style='background-color: navajowhite;' id='allorders' class='single-trending-post d-flex'><div class='post-content'>"
+                                var new_a = "<a href='/driver/about-order/" + response.orders[key].id + "' style='color: black; text-decoration: none;' class='post-title'>" + response.orders[key].qayerdan_nomi + " <i class='fa fa-angle-double-right'></i> " + response.orders[key].qayerga_nomi + "</a>"
+                                var new_div = "<div class='post-meta d-flex align-items-center'><a href='/driver/about-order/" + response.orders[key].id + "' style='text-decoration: none; background-color: #00b894;'>ODAM SONI: " + response.orders[key].person_count + "TA<a href='/driver/about-order/" + response.orders[key].id + "' style='text-decoration: none;'>NARXI: " + response.orders[key].price_nomi + "</a>"
+                                var new_div_end = "</div></div></div>"
+                                var result = new_div_start + new_a + new_div + new_div_end
+
+                                $('#container').append(result);
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log("No Data Found");
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+{% endblock %}

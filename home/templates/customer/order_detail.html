@@ -1,0 +1,129 @@
+{% extends 'customer/base.html' %}
+{% load static %}
+
+{% block title %}Buyurtma haqida - REGION TAXI{% endblock %}
+
+{% block content %}
+    <br>
+    <br>
+
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+        <div class="container h-100 d-flex align-items-center justify-content-between">
+            <!-- Back Button-->
+            <div class="back-button">
+                <a style="text-decoration: none;" href="{% url 'customer' %}">
+                    <i class="lni lni-chevron-left"></i>
+                </a>
+            </div>
+
+            <!-- Page Title-->
+            <div class="page-heading">
+                <h6 class="mb-0">BUYURTMALARIM</h6>
+            </div>
+
+            <!-- Search Form-->
+            <div class="search-form">
+                <a href="{% url 'customer-order-update' order.id %}">
+                    <i class="fa fa-refresh"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <!-- Scroll Indicator-->
+        <div id="scrollIndicator"></div>
+        <!-- Trending News Wrapper-->
+        <div style="padding-top: 0;" class="trending-news-wrapper">
+            <div class="container">
+                <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                    <div class="post-content">
+                        <a style="color: black; text-decoration: none;"
+                           class="post-title">{{ order.qayerdan }} <i
+                                class="fa fa-angle-double-right"></i> {{ order.qayerga }}</a>
+                        <hr>
+                        <h6>ODAM SONI: {{ order.person_count }} TA</h6>
+                        <h6>NARXI:
+                            {% if order.price.narx == 'Kelishiladi' %}{{ order.price }}{% else %}{{ order.price }}
+                                GACHA{% endif %}</h6>
+                        <hr>
+                        <h6>MANZIL: {{ order.location }}</h6>
+                        <hr>
+                        <h6>TELEFON: {{ order.client_phone }}</h6>
+                        <hr>
+                        <h6>BUYURTMA HOLATI: {% if order.status == 'yangi' %}Faol{% elif order.status == 'kutish' %}Hayovchi kutilmoqda{% elif order.status == 'olindi' %}Yo'lda{% endif %}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if order.status == 'kutish' and order.driver is not None %}
+            <div class="container">
+                <div class="border-top"></div>
+            </div>
+            <br>
+            <div style="padding-top: 0; padding-bottom: 15px;" class="trending-news-wrapper">
+                <div class="container">
+                    <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                        <div style="text-align: center;" class="post-content">
+                            <h5 style="color: black; text-decoration: none;">Buyurtmangiz qabul qilindi</h5>
+                            <hr>
+                            <h6>Haydovchi telefon raqami: <a style="margin-left: 5px;"
+                                                             href="tel://{{ order.driver.phone }}">{{ order.driver.phone }}</a>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="padding-top: 0; padding-bottom: 10px;" class="trending-news-wrapper">
+                <div class="container">
+                    <div style="background-color: darkred;" class="single-trending-post d-flex">
+                        <div style="text-align: center;" class="post-content">
+                            <a href="{% url 'black-list' order.id %}"
+                               style="color: white; text-decoration: none; font-size: 22px;">HAYDOVCHI MENDAN UZOQDA</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% elif order.status == 'yangi' %}
+            <div style="padding-top: 0; padding-bottom: 10px;" class="trending-news-wrapper">
+                <div class="container">
+                    <div style="background-color: darkred;" class="single-trending-post d-flex">
+                        <div style="text-align: center;" class="post-content">
+                            <a href="{% url 'delete-order' order.id %}"
+                               style="color: white; text-decoration: none; font-size: 22px;">BEKOR QILISH</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+        <div class="newsten-footer-nav h-100">
+            <ul class="h-100 d-flex align-items-center justify-content-between">
+                <li style="margin-left: 5%;">
+                    <a href="{% url 'customer' %}">
+                        <i class="lni lni-home"></i>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'customer-my-orders' %}">
+                        <i class="fa-regular fa-bookmark"></i>
+                    </a>
+                </li>
+                <li>
+                    <a style="margin-right: 5%;" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

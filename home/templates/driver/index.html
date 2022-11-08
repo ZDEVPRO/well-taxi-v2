@@ -1,0 +1,160 @@
+{% extends 'driver/base.html' %}
+{% load static %}
+{% block title %}REGION TAXI{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            background-color: #062c33;
+        }
+    </style>
+
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+        <div class="container h-100 d-flex align-items-center justify-content-between">
+            <!-- Navbar Toggler-->
+            <div class="navbar--toggler" id="newstenNavbarToggler"><span></span><span></span><span></span><span></span>
+            </div>
+
+            <!-- Logo-->
+            <div class="logo-wrapper">
+                <a href="{% url 'driver-home' %}">
+                    <h4 style="margin-top: 10px;">REGION TAXI</h4>
+                </a>
+            </div>
+
+            <!-- Search Form-->
+            <div class="search-form">
+                <a>
+                    <i class="fa-solid fa-user"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <!-- Trending News Wrapper-->
+        <div style="padding-bottom: 30px;" class="trending-news-wrapper">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 style="color: white;" class="mb-3 line-height-1">
+                        MENYU
+                    </h6>
+                </div>
+            </div>
+
+            <div class="container">
+                <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                    <div class="post-content">
+                        <a data-toggle="modal" data-target="#ordermodal{{ rs.id }}"
+                           style="color: black; text-decoration: none; text-align: center;" class="post-title">Xush
+                            Kelibsiz! {{ request.user.first_name }}</a>
+                    </div>
+                </div>
+                <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                    <div class="post-content">
+                        <a href="{% url 'driver' %}"
+                           style="color: black; text-decoration: none; text-align: center;" class="post-title">BUYURTMALAR</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending News Wrapper-->
+        <div class="trending-news-wrapper">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 style="color: white;" class="mb-3 line-height-1">TOP BUYURTMALAR</h6>
+                </div>
+            </div>
+
+            <div id="container" class="container">
+{#                {% if orders %}#}
+{#                    {% for rs in orders %}#}
+{#                        <div style="background-color: navajowhite;" class="single-trending-post d-flex">#}
+{#                            <div class="post-content">#}
+{#                                <a href="{% url 'driver-about-order' rs.id %}"#}
+{#                                   style="color: black; text-decoration: none;"#}
+{#                                   class="post-title">{{ rs.qayerdan }} <i#}
+{#                                        class="fa fa-angle-double-right"></i> {{ rs.qayerga }}</a>#}
+{#                                <div class="post-meta d-flex align-items-center">#}
+{#                                    <a href="{% url 'driver-about-order' rs.id %}"#}
+{#                                       style="text-decoration: none; background-color: #00b894;">ODAM#}
+{#                                        SONI: {{ rs.person_count }} TA</a>#}
+{#                                    <a href="{% url 'driver-about-order' rs.id %}"#}
+{#                                       style="text-decoration: none;">NARXI: {{ rs.price }}</a>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endfor %}#}
+{#                {% else %}#}
+{#                    <div style="background-color: navajowhite;" class="single-trending-post d-flex">#}
+{#                        <div class="post-content">#}
+{#                            <a style="color: black; text-decoration: none; text-align: center;" class="post-title">Buyurtmalar#}
+{#                                mavjud emas!</a>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                {% endif %}#}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+        <div class="newsten-footer-nav h-100">
+            <ul class="h-100 d-flex align-items-center justify-content-between">
+                <li style="margin-left: 5%;" class="active">
+                    <a href="{% url 'driver-home' %}">
+                        <i class="lni lni-home"></i>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'driver' %}">
+                        <i class="fa-regular fa-bookmark"></i>
+                    </a>
+                </li>
+                <li>
+                    <a style="margin-right: 5%;" href="{% url 'logout' %}">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'get-top-orders-driver' %}",
+                    success: function (response) {
+                        if (0 === response.count) {
+                            $("#container").empty();
+                            var html = "<div style='background-color: navajowhite;' class='single-trending-post d-flex'><div class='post-content''><a style='color: black; text-decoration: none; text-align: center;' class='post-title'>Buyurtmalar mavjud emas</a></div></div>"
+                            $('#container').append(html);
+                        } else {
+                            $("#container").empty();
+                            for (var key in response.orders) {
+                                var new_div_start = "<div style='background-color: navajowhite;' id='allorders' class='single-trending-post d-flex'><div class='post-content'>"
+                                var new_a = "<a href='/driver/about-order/" + response.orders[key].id + "' style='color: black; text-decoration: none;' class='post-title'>" + response.orders[key].qayerdan_nomi + " <i class='fa fa-angle-double-right'></i> " + response.orders[key].qayerga_nomi + "</a>"
+                                var new_div = "<div class='post-meta d-flex align-items-center'><a href='/driver/about-order/" + response.orders[key].id + "' style='text-decoration: none; background-color: #00b894;'>ODAM SONI: " + response.orders[key].person_count + "TA<a href='/driver/about-order/" + response.orders[key].id + "' style='text-decoration: none;'>NARXI: " + response.orders[key].price_nomi + "</a>"
+                                var new_div_end = "</div></div></div>"
+                                var result = new_div_start + new_a + new_div + new_div_end
+
+                                $('#container').append(result);
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log("No Data Found");
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+{% endblock %}

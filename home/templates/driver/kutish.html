@@ -1,0 +1,102 @@
+{% extends 'driver/base.html' %}
+{% load static %}
+{% block title %}Buyurtmalar{% endblock %}
+
+{% block content %}
+    <div class="modal fade" id="infomodal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="exampleModalCenterTitle">MALUMOT</h6>
+                    <button class="close close" type="button" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Bu kutish sahifasi. Mijozni qabul qilmaguningizgacha buyurtmangiz bu sahifada turadi.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-primary" style="width: 100%; background-color: grey; border: 1px solid grey;"
+                            type="button" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">YOPISH</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <!-- Trending News Wrapper-->
+        <div class="trending-news-wrapper">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="mb-3 line-height-1">KUTISH BO'LIMI</h6>
+                </div>
+            </div>
+
+            <div class="container">
+                {% if kutish_orders %}
+                    {% for rs in kutish_orders %}
+                        <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                            <div class="post-content">
+                                <a href="{% url 'driver-order-detail' rs.id %}"
+                                   style="color: black; text-decoration: none;"
+                                   class="post-title">{{ rs.qayerdan }} <i
+                                        class="fa fa-angle-double-right"></i> {{ rs.qayerga }}</a>
+                                <div class="post-meta d-flex align-items-center">
+                                    <a href="{% url 'driver-order-detail' rs.id %}"
+                                       style="text-decoration: none; background-color: #00b894;">ODAM
+                                        SONI: {{ rs.person_count }} TA</a>
+                                    <a href="{% url 'driver-order-detail' rs.id %}"
+                                       style="text-decoration: none;">NARXI: {{ rs.price }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                        <div class="post-content">
+                            <a data-toggle="modal" data-target="#ordermodal{{ rs.id }}"
+                               style="color: black; text-decoration: none; text-align: center;" class="post-title">Buyurtmalar
+                                mavjud emas!</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'getorders-driver' %}",
+                    success: function (response) {
+                        $("#footerNav").empty();
+                        var foot1 = "<div class='newsten-footer-nav h-100'><ul class='h-100 d-flex align-items-center justify-content-between'>"
+                        var foot2 = "<li style='margin-left: 5%;'><a href='/driver/orders/'><i class='fa fa-bookmark'></i> " + response.count + "</a></li>"
+                        var foot3 = "<li class='active'><a href='/driver/kutish/'><i class='fa fa-clock-o'></i> " + response.kutish_count + "</a></li>"
+                        var foot4 = "<li><a href='/driver/my-orders/'><i class='fa fa-user'></i> " + response.olindi_count + "</a></li>"
+                        var foot5 = "</ul></div>"
+                        var footresult = foot1 + foot2 + foot3 + foot4 + foot5
+                        $('#footerNav').append(footresult);
+
+                    },
+                    error: function (response) {
+                        console.log("No Data Found");
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'driver/base.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+    <br>
+    <br>
+    <!-- Center Modal-->
+    <div class="modal fade post-share-modal" id="postShareModal" tabindex="-1" role="dialog" aria-labelledby=""
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button class="close close" type="button" data-dismiss="modal" aria-label="Close">
+                        <i class="lni lni-close"></i>
+                    </button>
+
+                    <!-- Heading-->
+                    <h6 class="mb-3 pl-2">Share this post</h6>
+                    <div class="social-share-btn d-flex align-items-center flex-wrap">
+                        <a class="btn-facebook" href="#"><i class="lni lni-facebook"></i></a>
+                        <a class="btn-twitter" href="#"><i class="lni lni-twitter-original"></i></a>
+                        <a class="btn-instagram" href="#"><i class="lni lni-instagram"></i></a>
+                        <a class="btn-whatsapp" href="#"><i class="lni lni-whatsapp"></i></a>
+                        <a class="btn-linkedin" href="#"><i class="lni lni-linkedin"></i></a>
+                        <a class="btn-tumblr" href="#"><i class="lni lni-tumblr"></i></a>
+                        <a class="btn-quora" href="#"><i class="lni lni-quora"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+        <div class="container h-100 d-flex align-items-center justify-content-between">
+            <!-- Back Button-->
+            <div class="back-button">
+                <a style="text-decoration: none;" href="{% url 'driver' %}">
+                    <i class="lni lni-chevron-left"></i>
+                </a>
+            </div>
+
+            <!-- Page Title-->
+            <div class="page-heading">
+                <h6 class="mb-0">BUYURTMALAR</h6>
+            </div>
+
+            <!-- Search Form-->
+            <div class="search-form">
+                {% if request.path == '/driver/' %}
+                    <a data-toggle="modal" data-target="#filtermodal">
+                        <i class="fa fa-sliders"></i>
+                    </a>
+                {% else %}
+                    <a data-toggle="modal" data-target="#infomodal">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="page-content-wrapper">
+        <!-- Scroll Indicator-->
+        <div id="scrollIndicator"></div>
+        <!-- Trending News Wrapper-->
+        <div style="padding-top: 0;" class="trending-news-wrapper">
+            <div class="container">
+                <div style="background-color: navajowhite;" class="single-trending-post d-flex">
+                    <div class="post-content">
+                        <a style="color: black; text-decoration: none;"
+                           class="post-title">{{ order.qayerdan }} <i
+                                class="fa fa-angle-double-right"></i> {{ order.qayerga }}</a>
+                        <hr>
+                        <h6>ODAM SONI: {{ order.person_count }} TA</h6>
+                        <h6>NARXI:
+                            {% if order.price.narx == 'Kelishiladi' %}{{ order.price }}{% else %}{{ order.price }}
+                                GACHA{% endif %}</h6>
+                        <hr>
+                        <h6>MANZIL: {{ order.location }}</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if order.status == 'yangi' and order.driver == None %}
+            <div style="padding-top: 0;" class="trending-news-wrapper">
+                <div class="container">
+                    <div style="background-color: #65ba94;" class="single-trending-post d-flex">
+                        <div style="text-align: center;" class="post-content">
+                            <a href="{% url 'driver-accept-order' order.id %}"
+                               style="color: white; text-decoration: none; font-size: 22px;">Buyurtmani qabul qilish</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Footer Nav -->
+    <div class="footer-nav-area" id="footerNav">
+        <div class="newsten-footer-nav h-100">
+            <ul class="h-100 d-flex align-items-center justify-content-between">
+                <li class="active" style="margin-left: 5%;">
+                    <a style="text-decoration: none;" href="{% url 'driver' %}">
+                        <i class="fa fa-bookmark"></i> {{ active_orders_count }}
+                    </a>
+                </li>
+                <li>
+                    <a style="text-decoration: none;" href="{% url 'driver-kutish' %}">
+                        <i class="fa fa-clock-o"></i> {{ kutish_orders_count }}
+                    </a>
+                </li>
+                <li style="margin-right: 5%;"
+                    {% if request.path == '/driver/my-orders/' %}class="active"{% endif %}>
+                    <a style="text-decoration: none;" href="{% url 'driver-myorders' %}"
+                       {% if request.path == '/driver/' %}class="active"{% endif %}>
+                        <i class="fa fa-user"></i> {{ olindi_orders_count }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
